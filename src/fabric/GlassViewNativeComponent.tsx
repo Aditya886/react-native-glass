@@ -1,0 +1,14 @@
+/*
+ * react-native-glass — iOS native component
+ * Copyright (c) 2025 Aditya. All rights reserved.
+ */
+import { requireNativeComponent } from 'react-native';
+import type { ViewProps, ColorValue } from 'react-native';
+
+export interface NativeGlassViewProps extends ViewProps {
+  blurType?: 'dark' | 'light';
+  blurAmount?: number;
+  reducedTransparencyFallbackColor?: ColorValue;
+}
+
+export default requireNativeComponent<NativeGlassViewProps>('GlassView');
