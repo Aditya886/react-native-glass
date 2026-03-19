@@ -1,49 +1,22 @@
 buildscript {
-  ext.Glass = [
-    kotlinVersion: "2.0.21",
-    minSdkVersion: 24,
-    compileSdkVersion: 36,
-    targetSdkVersion: 36
-  ]
-
-  ext.getExtOrDefault = { prop ->
-    if (rootProject.ext.has(prop)) {
-      return rootProject.ext.get(prop)
-    }
-
-    return Glass[prop]
-  }
-
   repositories {
     google()
     mavenCentral()
   }
-
   dependencies {
-    classpath "com.android.tools.build:gradle:8.7.2"
-    // noinspection DifferentKotlinGradleVersion
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${getExtOrDefault('kotlinVersion')}"
+    classpath "com.android.tools.build:gradle:7.4.2"
   }
 }
 
-
 apply plugin: "com.android.library"
-apply plugin: "kotlin-android"
-
-apply plugin: "com.facebook.react"
 
 android {
+  compileSdkVersion 34
   namespace "com.glass"
 
-  compileSdkVersion getExtOrDefault("compileSdkVersion")
-
   defaultConfig {
-    minSdkVersion getExtOrDefault("minSdkVersion")
-    targetSdkVersion getExtOrDefault("targetSdkVersion")
-  }
-
-  buildFeatures {
-    buildConfig true
+    minSdkVersion 21        // Android 5.0 — covers 99%+ of active devices
+    targetSdkVersion 34
   }
 
   buildTypes {
@@ -52,16 +25,22 @@ android {
     }
   }
 
-  lint {
-    disable "GradleCompatible"
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
   }
 
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+  kotlinOptions {
+    jvmTarget = "17"
   }
 }
 
+repositories {
+  mavenCentral()
+  google()
+}
+
 dependencies {
+  // React Native — provided by the consuming app, not bundled
   implementation "com.facebook.react:react-android"
 }
