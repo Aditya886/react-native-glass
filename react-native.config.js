@@ -1,19 +1,21 @@
 /**
  * react-native.config.js
- * Required for React Native autolinking.
- * This tells RN CLI where to find the native Android and iOS modules.
+ *
+ * Minimal config for React Native autolinking.
+ * Works with RN 0.60 through 0.76+.
+ *
+ * Do NOT add packageImportPath or packageInstance here —
+ * those old fields break react-native config in RN 0.71+.
+ * Autolinking finds GlassPackage automatically via the manifest.
  */
 module.exports = {
   dependency: {
     platforms: {
-      ios: {
-        podspecPath: './react-native-glass.podspec',
-      },
       android: {
         sourceDir: './android',
-        manifestPath: './android/src/main/AndroidManifest.xml',
-        packageImportPath: 'import com.glass.GlassPackage;',
-        packageInstance: 'new GlassPackage()',
+      },
+      ios: {
+        podspecPath: './react-native-glass.podspec',
       },
     },
   },

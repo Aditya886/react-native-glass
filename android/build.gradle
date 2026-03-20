@@ -5,17 +5,19 @@ buildscript {
   }
   dependencies {
     classpath "com.android.tools.build:gradle:7.4.2"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
   }
 }
 
 apply plugin: "com.android.library"
+apply plugin: "org.jetbrains.kotlin.android"
 
 android {
   compileSdkVersion 34
   namespace "com.glass"
 
   defaultConfig {
-    minSdkVersion 21        // Android 5.0 — covers 99%+ of active devices
+    minSdkVersion 21
     targetSdkVersion 34
   }
 
@@ -41,6 +43,5 @@ repositories {
 }
 
 dependencies {
-  // React Native — provided by the consuming app, not bundled
   implementation "com.facebook.react:react-android"
 }

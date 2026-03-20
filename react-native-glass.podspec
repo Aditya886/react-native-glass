@@ -8,14 +8,21 @@ Pod::Spec.new do |s|
   s.summary      = package["description"]
   s.homepage     = package["homepage"]
   s.license      = package["license"]
-  s.authors      = package["author"]
+
+  # author must be a Hash in CocoaPods — string format causes parse failure
+  s.author       = { "Aditya" => "adiaditya144@gmail.com" }
 
   s.platforms    = { :ios => "12.0" }
-  s.source       = { :git => "https://github.com/aditya886/react-native-glass.git", :tag => "#{s.version}" }
 
-  # All Objective-C and Objective-C++ source files
+  # Use a local path during development; tag-based for releases
+  s.source       = {
+    :git => "https://github.com/aditya886/react-native-glass.git",
+    :tag => "#{s.version}"
+  }
+
+  # All Objective-C and Objective-C++ source files in ios/
   s.source_files = "ios/**/*.{h,m,mm}"
 
-  # Required for both Old Architecture (Paper) and New Architecture (Fabric interop)
+  # Works on Old Architecture (Paper) and New Architecture (Fabric interop)
   s.dependency "React-Core"
 end
