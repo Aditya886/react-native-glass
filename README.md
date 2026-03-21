@@ -2,7 +2,35 @@
 
 A high-quality **frosted glass blur effect** for React Native — iOS and Android.
 
-Built from scratch. Zero dependencies. Works on every React Native version.
+Powered by `UIVisualEffectView` on iOS and [Dimezis/BlurView](https://github.com/Dimezis/BlurView) on Android. Zero custom blur code — just the best engines available on each platform.
+
+---
+
+<table>
+  <tr>
+    <td align="center">
+      <img
+        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/dark.png"
+        width="220"
+        alt="Dark blur"
+      />
+      <br /><sub><b>blurType="dark"</b></sub>
+    </td>
+    <td align="center">
+      <img
+        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/light.png"
+        width="220"
+        alt="Light blur"
+      />
+      <br /><sub><b>blurType="light"</b></sub>
+    </td>
+  </tr>
+</table>
+
+> **Add your screenshots:**
+> 1. Take screenshots on a real device
+> 2. Save as `screenshots/dark.png` and `screenshots/light.png`
+> 3. Push to GitHub — images appear here automatically
 
 ---
 
@@ -28,7 +56,7 @@ cd ios && pod install
 import GlassView from 'react-native-glass';
 ```
 
-### Basic example
+### Basic
 
 ```tsx
 import React from 'react';
@@ -40,19 +68,19 @@ export default function Card() {
     <View style={styles.container}>
       <Image
         source={{ uri: 'https://example.com/photo.jpg' }}
-        style={styles.absolute}
+        style={StyleSheet.absoluteFill}
         resizeMode="cover"
       />
-      <Text style={styles.absolute}>This text will be blurred</Text>
 
       {/* Everything rendered BEFORE GlassView will be blurred */}
       <GlassView
-        style={styles.absolute}
+        style={StyleSheet.absoluteFill}
         blurType="dark"
         blurAmount={20}
       />
 
-      <Text style={styles.top}>I am NOT blurred — rendered on top</Text>
+      {/* Content rendered AFTER GlassView is NOT blurred */}
+      <Text style={styles.text}>On top of blur</Text>
     </View>
   );
 }
@@ -64,16 +92,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 16,
   },
-  absolute: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
-  },
-  top: {
-    color: '#fff',
-    fontWeight: '700',
-    fontSize: 16,
-    padding: 16,
-  },
+  text: { color: '#fff', fontWeight: '700', fontSize: 16, padding: 16 },
 });
 ```
 
@@ -81,13 +100,13 @@ const styles = StyleSheet.create({
 
 ## Props
 
-| Property | Possible Values | Default | Platform |
+| Property | Values | Default | Platform |
 |---|---|---|---|
-| `blurType` | `'dark'` \| `'light'` | `'dark'` | iOS + Android |
+| `blurType` | `'dark'` `'light'` `'glass'` | `'dark'` | iOS + Android |
 | `blurAmount` | `0` – `100` | `10` | iOS + Android |
-| `blurRadius` | `0` – `25` | Derived from `blurAmount` | Android only |
-| `overlayColor` | Any RGBA color string | Based on `blurType` | Android only |
-| `autoUpdate` | `boolean` | `false` | Android only |
+| `blurRadius` | `0` – `25` | — | Android only |
+| `overlayColor` | RGBA color string | Based on `blurType` | Android only |
+| `enabled` | `boolean` | `true` | iOS + Android |
 
 ---
 
@@ -95,82 +114,59 @@ const styles = StyleSheet.create({
 
 | Value | Description |
 |---|---|
-| `dark` | Dark frosted glass — semi-transparent dark tint |
-| `light` | Light frosted glass — semi-transparent light tint |
+| `dark` | Blur + subtle dark tint — for light backgrounds |
+| `light` | Blur + subtle light tint — for dark backgrounds |
+| `glass` | Pure blur — zero tint, transparent overlay |
 
 ---
 
 ## blurAmount scale
 
-| Value | Effect |
-|---|---|
-| `0` | No blur |
-| `1` – `5` | Barely visible frost |
-| `10` | Subtle glass |
-| `20` – `30` | Soft frosted glass |
-| `50` | Medium blur |
-| `80` | Heavy blur |
-| `100` | Maximum frosted glass |
-
----
-
-## autoUpdate (Android only)
-
-Re-captures the background on every frame. Use when the background content
-changes dynamically — for example, a video, animation, or live camera feed.
-
-```tsx
-<GlassView
-  blurType="dark"
-  blurAmount={20}
-  autoUpdate={true}
-  style={StyleSheet.absoluteFill}
-/>
-```
-
-> Has a performance cost. Only enable when the background is actively changing.
+| `blurAmount` | Radius | Effect |
+|---|---|---|
+| `1` | `1.0px` | barely visible |
+| `5` | `2.0px` | very subtle |
+| `10` | `3.2px` | light frost |
+| `25` | `7.1px` | soft glass |
+| `50` | `13.1px` | medium blur |
+| `75` | `19.2px` | heavy blur |
+| `100` | `25.0px` | maximum |
 
 ---
 
 ## Important rules
 
-### 1. Parent needs `overflow: 'hidden'` for `borderRadius` to clip the blur
+### 1. Parent needs `overflow: 'hidden'` for `borderRadius`
 
 ```tsx
-// ✅ Correct
 <View style={{ borderRadius: 20, overflow: 'hidden' }}>
   <Image source={bg} style={StyleSheet.absoluteFill} />
   <GlassView blurType="dark" blurAmount={20} style={StyleSheet.absoluteFill} />
 </View>
-
-// ❌ Wrong — blur leaks outside the rounded corners
-<View style={{ borderRadius: 20 }}>
-  <GlassView ... />
-</View>
 ```
 
-### 2. GlassView needs explicit `width` and `height` when used as a partial overlay
+### 2. Give `GlassView` explicit `width` and `height` for partial overlays
 
 ```tsx
-// ✅ Correct — explicit height
+// ✅ Correct
 <GlassView style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 80 }} />
 
-// ❌ Wrong — no height, GlassView is 0px tall, nothing is captured
+// ❌ No height — GlassView is 0px tall
 <GlassView style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }} />
 ```
 
-### 3. Text and content go in a sibling View — never inside GlassView
+### 3. Content goes in a sibling View — not inside GlassView
 
 ```tsx
-// ✅ Correct — GlassView and content are siblings
-<GlassView blurType="dark" blurAmount={20} style={cardStyle} />
-<View style={cardStyle} pointerEvents="none">
-  <Text>Content on top of blur</Text>
+// ✅ Correct
+<GlassView blurType="dark" blurAmount={20} style={glassStyle} />
+<View style={glassStyle} pointerEvents="none">
+  <Text>Unblurred content</Text>
 </View>
 
-// ❌ Wrong — content inside GlassView gets blurred too
-<GlassView blurType="dark" blurAmount={20} style={cardStyle}>
-  <Text>This text will also be blurred</Text>
+// ❌ Content inside GlassView gets blurred too
+<GlassView blurType="dark" blurAmount={20} style={glassStyle}>
+  <Text>This will be blurred</Text>
 </GlassView>
 ```
 
@@ -192,38 +188,24 @@ export default function App() {
       {/* Full overlay */}
       <View style={styles.card}>
         <Image source={BG} style={StyleSheet.absoluteFill} resizeMode="cover" />
-        <GlassView
-          blurType="dark"
-          blurAmount={20}
-          style={StyleSheet.absoluteFill}
-        />
+        <GlassView blurType="dark" blurAmount={20} style={StyleSheet.absoluteFill} />
         <Text style={styles.text}>Full overlay</Text>
       </View>
 
       {/* Bottom sheet */}
       <View style={styles.card}>
         <Image source={BG} style={StyleSheet.absoluteFill} resizeMode="cover" />
-        <GlassView
-          blurType="light"
-          blurAmount={15}
-          style={styles.sheet}
-        />
+        <GlassView blurType="light" blurAmount={15} style={styles.sheet} />
         <View style={styles.sheet} pointerEvents="none">
           <Text style={styles.text}>Bottom sheet</Text>
         </View>
       </View>
 
-      {/* Floating card */}
+      {/* Pure glass — no tint */}
       <View style={styles.card}>
         <Image source={BG} style={StyleSheet.absoluteFill} resizeMode="cover" />
-        <GlassView
-          blurType="dark"
-          blurAmount={25}
-          style={styles.floatBox}
-        />
-        <View style={styles.floatBox} pointerEvents="none">
-          <Text style={styles.text}>Floating card</Text>
-        </View>
+        <GlassView blurType="glass" blurAmount={30} style={StyleSheet.absoluteFill} />
+        <Text style={styles.text}>Glass — pure blur</Text>
       </View>
 
     </ScrollView>
@@ -234,7 +216,7 @@ const styles = StyleSheet.create({
   card: {
     height: 200,
     borderRadius: 18,
-    overflow: 'hidden',       // required for borderRadius to clip blur
+    overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
@@ -242,23 +224,11 @@ const styles = StyleSheet.create({
   sheet: {
     position: 'absolute',
     bottom: 0, left: 0, right: 0,
-    height: 80,               // explicit height — required for partial overlay
+    height: 80,
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
-  floatBox: {
-    position: 'absolute',
-    width: 180,
-    height: 100,              // explicit height — required
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: '#fff',
-    fontWeight: '700',
-    fontSize: 16,
-  },
+  text: { color: '#fff', fontWeight: '700', fontSize: 16 },
 });
 ```
 
@@ -266,27 +236,28 @@ const styles = StyleSheet.create({
 
 ## How it works
 
-**iOS** — uses `UIVisualEffectView` backed by the GPU compositor. The blur is applied in real-time by the system. Zero CPU cost, no screen capture needed.
+**iOS** — `UIVisualEffectView` backed by the system GPU compositor. Real-time blur, zero CPU cost.
 
-**Android** — uses `PixelCopy` (API 26+) to capture the GPU surface, then applies a separable box blur on a background thread. The view stays invisible until the first blur is ready — no black box, no flash. Automatically retries capture until real background content is detected.
+**Android API 31+** — `RenderEffectBlur` via [Dimezis/BlurView](https://github.com/Dimezis/BlurView). GPU compositor handles blur in the render pipeline.
+
+**Android API 21–30** — `RenderScriptBlur` via [Dimezis/BlurView](https://github.com/Dimezis/BlurView). Hardware-accelerated RenderScript blur.
+
+Works with images, videos, GIFs, Lottie animations — any content behind the view.
 
 ---
 
 ## Platform support
 
-| Platform | Min version | Blur engine |
+| Platform | Min version | Engine |
 |---|---|---|
-| iOS | 12.0+ | `UIVisualEffectView` — real-time GPU compositing |
-| Android | API 21+ (Android 5.0+) | `PixelCopy` (API 26+) · Software draw (API 21–25) |
-
----
+| iOS | 12.0+ | `UIVisualEffectView` |
+| Android | API 21+ (Android 5.0+) | `RenderEffectBlur` (API 31+) · `RenderScriptBlur` (API 21–30) |
 
 ## React Native compatibility
 
 | React Native | Support |
 |---|---|
-| 0.60 – 0.67 | ✅ Old Architecture (Paper) |
-| 0.68 – 0.72 | ✅ Old + New Architecture |
+| 0.60 – 0.72 | ✅ Old Architecture |
 | 0.73 – 0.76+ | ✅ New Architecture (Fabric interop) |
 
 ---
@@ -295,6 +266,4 @@ const styles = StyleSheet.create({
 
 MIT © 2025 Aditya
 
----
-
-[GitHub](https://github.com/aditya886/react-native-glass) · [npm](https://www.npmjs.com/package/react-native-glass) · [Report an issue](https://github.com/aditya886/react-native-glass/issues)
+[GitHub](https://github.com/aditya886/react-native-glass) · [npm](https://www.npmjs.com/package/react-native-glass) · [Issues](https://github.com/aditya886/react-native-glass/issues)

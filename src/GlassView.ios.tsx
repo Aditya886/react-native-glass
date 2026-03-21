@@ -4,25 +4,27 @@ import type { ViewStyle } from 'react-native';
 import NativeGlassView from './fabric/GlassViewNativeComponent';
 import type { GlassViewProps } from './types';
 
-/**
- * GlassView — iOS
- * Renders a UIVisualEffectView-backed frosted glass effect.
- * blurRadius and overlayColor are Android-only — silently ignored here.
- */
+// iOS maps 'glass' to 'light' — UIVisualEffectView handles tint automatically
+const IOS_BLUR_MAP: Record<string, 'dark' | 'light'> = {
+  dark:  'dark',
+  light: 'light',
+  glass: 'light',
+};
+
 const GlassView = forwardRef<View, GlassViewProps>(
   (
     {
       blurType    = 'dark',
       blurAmount  = 10,
-      blurRadius:    _r,   // Android-only, ignored on iOS
-      overlayColor:  _o,   // Android-only, ignored on iOS
+      blurRadius:   _r,
+      overlayColor: _o,
       style,
       children,
       ...rest
     },
     ref
   ) => {
-    const safeAmount = useMemo(
+    const safeAmount  = useMemo(
       () => Math.max(0, Math.min(100, Math.round(blurAmount))),
       [blurAmount]
     );
@@ -31,9 +33,12 @@ const GlassView = forwardRef<View, GlassViewProps>(
       <NativeGlassView
         {...rest}
         ref={ref as any}
-        blurType={blurType}
+        blurType={IOS_BLUR_MAP[blurType] ?? 'dark'}
         blurAmount={safeAmount}
-        style={StyleSheet.compose(styles.base, style as ViewStyle)}
+        style={StyleSheet.compose(
+          { backgroundColor: 'transparent' },
+          style as ViewStyle
+        )}
       >
         {children}
       </NativeGlassView>
@@ -42,10 +47,4 @@ const GlassView = forwardRef<View, GlassViewProps>(
 );
 
 GlassView.displayName = 'GlassView';
-
-const styles = StyleSheet.create<{ base: ViewStyle }>({
-  base: { backgroundColor: 'transparent' },
-});
-
 export default GlassView;
-export type { GlassViewProps };

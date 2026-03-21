@@ -1,17 +1,21 @@
 import type { ViewStyle } from 'react-native';
 
-export type BlurType = 'dark' | 'light';
+/**
+ * dark  — blur + subtle black tint
+ * light — blur + subtle white tint
+ * glass — pure blur, zero tint (true frosted glass look)
+ */
+export type BlurType = 'dark' | 'light' | 'glass';
 
 export interface GlassViewProps {
   /** Blur tint theme. @default 'dark' */
   blurType?: BlurType;
-  /** Blur intensity 0–100. 0 = no blur, 100 = maximum. @default 10 */
+  /** Blur intensity 0–100. @default 10 */
   blurAmount?: number;
-  /** Raw blur radius override (0–25). Android only. Overrides blurAmount when set. */
+  /** Raw blur radius override. Android only. */
   blurRadius?: number;
-  /** Custom RGBA tint color over the blur. Android only. */
+  /** Custom RGBA tint color. Android only. */
   overlayColor?: string;
-  /** Standard React Native ViewStyle. */
   style?: ViewStyle;
   children?: React.ReactNode;
 }
