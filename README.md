@@ -10,7 +10,7 @@ Powered by `UIVisualEffectView` on iOS and [Dimezis/BlurView](https://github.com
   <tr>
     <td align="center">
       <img
-        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/dark.png"
+        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/dark.jpeg"
         width="220"
         alt="Dark blur"
       />
@@ -18,21 +18,22 @@ Powered by `UIVisualEffectView` on iOS and [Dimezis/BlurView](https://github.com
     </td>
     <td align="center">
       <img
-        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/light.png"
+        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/light.jpeg"
         width="220"
         alt="Light blur"
       />
       <br /><sub><b>blurType="light"</b></sub>
     </td>
+    <td align="center">
+      <img
+        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/glass.jpeg"
+        width="220"
+        alt="Glass effect"
+      />
+      <br /><sub><b>blurType="glass"</b></sub>
+    </td>
   </tr>
 </table>
-
-> **Add your screenshots:**
-> 1. Take screenshots on a real device
-> 2. Save as `screenshots/dark.png` and `screenshots/light.png`
-> 3. Push to GitHub — images appear here automatically
-
----
 
 ## Installation
 
