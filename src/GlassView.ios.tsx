@@ -4,17 +4,9 @@ import type { ViewStyle } from 'react-native';
 import NativeGlassView from './fabric/GlassViewNativeComponent';
 import type { GlassViewProps } from './types';
 
-// iOS maps 'glass' to 'light' — UIVisualEffectView handles tint automatically
-const IOS_BLUR_MAP: Record<string, 'dark' | 'light'> = {
-  dark:  'dark',
-  light: 'light',
-  glass: 'light',
-};
-
 const GlassView = forwardRef<View, GlassViewProps>(
   (
     {
-      blurType    = 'dark',
       blurAmount  = 10,
       blurRadius:   _r,
       overlayColor: _o,
@@ -33,7 +25,8 @@ const GlassView = forwardRef<View, GlassViewProps>(
       <NativeGlassView
         {...rest}
         ref={ref as any}
-        blurType={IOS_BLUR_MAP[blurType] ?? 'dark'}
+        // iOS always uses the glass path; dark/light are Android-only themes.
+        blurType="glass"
         blurAmount={safeAmount}
         style={StyleSheet.compose(
           { backgroundColor: 'transparent' },

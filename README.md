@@ -2,35 +2,25 @@
 
 A high-quality **frosted glass blur effect** for React Native — iOS and Android.
 
-Powered by `UIVisualEffectView` on iOS and [Dimezis/BlurView](https://github.com/Dimezis/BlurView) on Android. Zero custom blur code — just the best engines available on each platform.
-
 ---
 
 <table>
   <tr>
     <td align="center">
       <img
-        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/dark.jpeg"
+        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/android.jpeg"
         width="220"
         alt="Dark blur"
       />
-      <br /><sub><b>blurType="dark"</b></sub>
+      <br /><sub><b>Platform="Android"</b></sub>
     </td>
     <td align="center">
       <img
-        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/light.jpeg"
+        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/ios.jpeg"
         width="220"
         alt="Light blur"
       />
-      <br /><sub><b>blurType="light"</b></sub>
-    </td>
-    <td align="center">
-      <img
-        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/glass.jpeg"
-        width="220"
-        alt="Glass effect"
-      />
-      <br /><sub><b>blurType="glass"</b></sub>
+      <br /><sub><b>Platform="IOS"</b></sub>
     </td>
   </tr>
 </table>
@@ -115,9 +105,11 @@ const styles = StyleSheet.create({
 
 | Value | Description |
 |---|---|
-| `dark` | Blur + subtle dark tint — for light backgrounds |
-| `light` | Blur + subtle light tint — for dark backgrounds |
-| `glass` | Pure blur — zero tint, transparent overlay |
+| `dark` | Android uses a darker blur theme; iOS ignores this and renders glass |
+| `light` | Android uses a lighter blur theme; iOS ignores this and renders glass |
+| `glass` | Android and iOS glass path; on iOS this is the only rendered variant |
+
+On iOS, `blurType` is treated as glass-only. The native view uses a glass-like blur fallback on older iOS versions, so light/dark do not change the iOS look.
 
 ---
 
@@ -232,19 +224,6 @@ const styles = StyleSheet.create({
   text: { color: '#fff', fontWeight: '700', fontSize: 16 },
 });
 ```
-
----
-
-## How it works
-
-**iOS** — `UIVisualEffectView` backed by the system GPU compositor. Real-time blur, zero CPU cost.
-
-**Android API 31+** — `RenderEffectBlur` via [Dimezis/BlurView](https://github.com/Dimezis/BlurView). GPU compositor handles blur in the render pipeline.
-
-**Android API 21–30** — `RenderScriptBlur` via [Dimezis/BlurView](https://github.com/Dimezis/BlurView). Hardware-accelerated RenderScript blur.
-
-Works with images, videos, GIFs, Lottie animations — any content behind the view.
-
 ---
 
 ## Platform support
