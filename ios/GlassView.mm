@@ -15,7 +15,7 @@
 
 - (instancetype)init {
   if (self = [super init]) {
-    _blurType   = @"dark";
+    _blurType   = @"glass";
     _blurAmount = 10;
     [self _setupViews];
     // Listen for Reduce Transparency accessibility changes
@@ -52,17 +52,14 @@
 // ── Effect construction ───────────────────────────────────────────────────────
 
 - (UIBlurEffect *)_currentEffect {
-  // iOS 13+ material styles respect the system light/dark mode automatically
+  // iOS always uses a glass-like blur effect. Older versions fall back to the
+  // closest native blur style so the content behind it stays visible.
   if (@available(iOS 13.0, *)) {
-    UIBlurEffectStyle style = [self.blurType isEqualToString:@"light"]
-      ? UIBlurEffectStyleSystemMaterialLight
-      : UIBlurEffectStyleSystemMaterialDark;
+    UIBlurEffectStyle style = UIBlurEffectStyleSystemUltraThinMaterial;
     return [UIBlurEffect effectWithStyle:style];
   }
-  // iOS 12 fallback
-  UIBlurEffectStyle style = [self.blurType isEqualToString:@"light"]
-    ? UIBlurEffectStyleLight
-    : UIBlurEffectStyleDark;
+  // iOS 12 and earlier fallback
+  UIBlurEffectStyle style = UIBlurEffectStyleExtraLight;
   return [UIBlurEffect effectWithStyle:style];
 }
 
@@ -75,9 +72,7 @@
 
   if (reduced) {
     _fallbackView.backgroundColor = self.reducedTransparencyFallbackColor
-      ?: ([self.blurType isEqualToString:@"light"]
-           ? [UIColor colorWithWhite:1.0 alpha:0.85]
-           : [UIColor colorWithWhite:0.1 alpha:0.85]);
+      ?: [UIColor colorWithWhite:1.0 alpha:0.18];
   }
 }
 
@@ -88,7 +83,9 @@
 // ── Property setters (called by RCTViewManager bridge) ────────────────────────
 
 - (void)setBlurType:(NSString *)blurType {
-  _blurType = blurType ?: @"dark";
+  // iOS ignores the requested theme and always renders the glass fallback.
+  // Android still consumes the actual blurType value.
+  _blurType = @"glass";
   _effectView.effect = [self _currentEffect];
   [self _applyAccessibility];
 }
