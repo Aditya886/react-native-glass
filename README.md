@@ -16,7 +16,7 @@ A high-quality **frosted glass blur effect** for React Native — iOS and Androi
     </td>
     <td align="center">
       <img
-        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/ios.jpeg"
+        src="https://raw.githubusercontent.com/aditya886/react-native-glass/main/screenshots/ios.png"
         width="220"
         alt="Light blur"
       />

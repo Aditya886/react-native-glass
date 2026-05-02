@@ -1,6 +1,6 @@
 {
   "name": "react-native-glass",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "A high-quality frosted glass blur effect for React Native — iOS UIVisualEffectView + Android PixelCopy. Dark & Light themes, smooth intensity control, Old & New Architecture support.",
   "main": "src/index",
   "module": "src/index",
